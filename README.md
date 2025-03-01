@@ -3,6 +3,11 @@ This repository is for code/documentation for my USB switch controller, a Pi Pic
 - [ ] Cleanly unmounting drives connected to the switch beforehand
 - [ ] If a computer is turned on, and the other computer is turned off and had the switch connected to it, automatically switch to the on computer by wirelessly pinging the Pi Pico W
 - And more (or more detailed descriptions of these features)
+## Setup
+`git clone` with `--recurse-submodules` to pull the [Raspberry Pi Pico SDK](https://github.com/raspberrypi/pico-sdk).
+
+If on NixOS, you can either run `nix develop` and set the `PICO_SDK_PATH` environment variable manually. Alternatively, use [direnv](https://direnv.net/) with the [nix-direnv](https://github.com/nix-community/nix-direnv), which will automatically enter you into the Nix shell and set needed environment variables.
+
 ## Software Overview
 ### Getting USB Info
 See [lsusb-reference/README.md](lsusb-reference/README.md)
