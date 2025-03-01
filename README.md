@@ -4,6 +4,8 @@ This repository is for code/documentation for my USB switch controller, a Pi Pic
 - [ ] If a computer is turned on, and the other computer is turned off and had the switch connected to it, automatically switch to the on computer by wirelessly pinging the Pi Pico W
 - And more (or more detailed descriptions of these features)
 ## Software Overview
+### Getting USB Info
+See [lsusb-reference/README.md](lsusb-reference/README.md)
 ## Hardware Overview
 ### USB Switch
 My USB switch of choice for this project was the UGREEN USB switch, with 4 input ports and two output ports. It has a button on the chassis like most USB switches, but it has one standout feature: a USB mini port with an external button. The button itself was uninteresting to me; it's lightweight and rather ugly. But the port itself allows for trivial switching by bridging the data +/- pins.
