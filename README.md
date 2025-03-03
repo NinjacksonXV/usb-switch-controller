@@ -1,12 +1,12 @@
-This repository is for code/documentation for my USB switch controller, a Pi Pico W with miscellaneous hardware, controlled with scripts responsible for clean control and automation of a 4-port USB switch. Features include:
+This repository holds documentation and code for my USB switch controller; it's a Pi Pico W with some added ports and functionality, meant to cleanly control and automate a 4-port USB switch. Features include:
 - [ ] A script meant to be bound to an OS event, such as a keybind, which will trigger the USB switch to the other computer
 - [ ] Cleanly unmounting drives connected to the switch beforehand
 - [ ] If a computer is turned on, and the other computer is turned off and had the switch connected to it, automatically switch to the on computer by wirelessly pinging the Pi Pico W
 - And more (or more detailed descriptions of these features)
 ## Setup
-`git clone` with `--recurse-submodules` to pull the [Raspberry Pi Pico SDK](https://github.com/raspberrypi/pico-sdk).
+`git clone` with `--recurse-submodules` to pull the [Raspberry Pi Pico SDK](https://github.com/raspberrypi/pico-sdk). For now, see `buildInputs` in `flake.nix` to get a WIP list of other dependencies. 
 
-If on NixOS, you can either run `nix develop` and set the `PICO_SDK_PATH` environment variable manually. Alternatively, use [direnv](https://direnv.net/) with the [nix-direnv](https://github.com/nix-community/nix-direnv), which will automatically enter you into the Nix shell and set needed environment variables.
+If using Nix (with experimental Nix commands enabled), you can run `nix develop` and set the `PICO_SDK_PATH` environment variable manually (`$PWD/pico-sdk`) or in the Nix shell hook. Alternatively, use [direnv](https://direnv.net/) with the [nix-direnv](https://github.com/nix-community/nix-direnv), which will automatically enter you into the Nix shell and set needed environment variables.
 
 ## Software Overview
 ### Getting USB Info
