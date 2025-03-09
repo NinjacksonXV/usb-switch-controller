@@ -6,7 +6,7 @@ This repository holds documentation and code for my USB switch controller; it's 
 ## Setup
 `git clone` with `--recurse-submodules` to pull the [Raspberry Pi Pico SDK](https://github.com/raspberrypi/pico-sdk). For now, see `buildInputs` in `flake.nix` to get a WIP list of other dependencies. 
 
-If using Nix (with experimental Nix commands enabled), you can run `nix develop` and set the `PICO_SDK_PATH` environment variable manually (`$PWD/pico-sdk`) or in the Nix shell hook. Alternatively, use [direnv](https://direnv.net/) with the [nix-direnv](https://github.com/nix-community/nix-direnv), which will automatically enter you into the Nix shell and set needed environment variables.
+If using Nix (with experimental Nix commands enabled), you can run `nix develop` and set the `PICO_SDK_PATH` environment variable manually (`$PWD/pico-sdk`) or in the Nix shell hook. Alternatively, use [direnv](https://direnv.net/) with the [nix-direnv](https://github.com/nix-community/nix-direnv) module, which will automatically enter you into the Nix shell and set needed environment variables.
 
 ## Software Overview
 ### Getting USB Info
