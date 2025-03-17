@@ -17,6 +17,7 @@
           python3
           git
           picotool
+          glibc_multi
         ];
 
         shellHook = ''
