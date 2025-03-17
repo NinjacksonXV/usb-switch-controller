@@ -19,13 +19,14 @@ My USB switch of choice for this project was the UGREEN USB switch, with 4 input
 
 I also combined it with:
 
-...this fairly generic Sabrent USB 2.0 hub, as it seemed wasteful to have 5Gbps but only plug in a few peripherals. I plugged this into one of the ports, leaving the other two free.
+...this fairly generic Sabrent USB 2.0 hub; it seemed wasteful to have 5Gbps but only plug in a few bandwidth-light peripherals. I plugged this into one of the ports, leaving the other two free for highter-bandwidth devices.
 - Amazon Link ($6.95): https://www.amazon.com/dp/B00L2442H0
 
-...two USB 3.0 extension cables from Amazon basics, which will be installed on my desk for easy access.
+...two USB 3.0 extension cables from Amazon basics, which will be installed on my desk for easy access to the high-speed ports.
 - Amazon Link ($16.14 USD for 6-foot variant): https://www.amazon.com/dp/B014RWATK2
 
 ### Switcher Hardware
+See [hardware/README](hardware/README.md) for a more in-depth overview.
 #### Microcontroller
 I went with a third-party Pi Pico W for its price, breadth of compatibility and documentation, and for this particular model, a USB-C port.
 - AliExpress link ($5.00 USD): https://www.aliexpress.us/item/3256806674735573.html
@@ -40,6 +41,5 @@ The Pico W itself is configured as a USB device and will be connected to the swi
     - This is for providing power to the Pi Pico.
 - 20pcs Protoboard ($3.59 USD): https://www.aliexpress.com/item/3256805882382244.html
     - I'm using the 10x24 hole protoboard included in this kit.
-- 50pcs Black M1.6 6mm Phillips Screws ($0.94 USD): https://www.aliexpress.com/item/3256802339245383.html
-    - 6mm might be a bit too long; 3mm is probably better. If using 6mm, make sure there's about 2mm extra space below the heatset insert, otherwise the protoboard will have a loose fit.
+- 50pcs Black M1.6 4mm Phillips Screws ($0.94 USD): https://www.aliexpress.com/item/3256802339245383.html
 - 100pcs M1.6 3mm Heatset Inserts ($2.31 USD): https://www.aliexpress.com/item/3256804349544912.html
