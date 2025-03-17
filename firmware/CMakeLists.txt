@@ -1,12 +1,15 @@
-cmake_minimum_required(VERSION 3.13...3.27)
+cmake_minimum_required(VERSION 3.31)
 
-# initialize pico-sdk from submodule
-# note: this must happen before project()
-include(pico-sdk/pico_sdk_init.cmake)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 
-project(usb-switcher)
-
-# initialize the Raspberry Pi Pico SDK
+project(pico-usb-switch)
+set(CMAKE_C_STANDARD 11)
 pico_sdk_init()
 
-# rest of your project
+add_executable(pico-usb-switch usb_switch_controller.c)
+
+target_link_libraries(pico-usb-switch pico_stdlib)
+
+pico_add_extra_outputs(pico-usb-switch)
+
