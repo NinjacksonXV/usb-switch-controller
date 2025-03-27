@@ -11,13 +11,18 @@
     in {
       devShells.x86_64-linux.default = pkgs.mkShell {
         buildInputs = with pkgs; [
-          cmake
-          ninja
-          gcc-arm-embedded
+          # Linux Host #
           python3
-          git
+          python312Packages.pygobject3
+          python312Packages.pygobject-stubs
+          udisks
+
+          # Pico Firmware #
+          cmake
+          gcc-arm-embedded
           picotool
           glibc_multi
+          gobject-introspection
         ];
 
         shellHook = ''
