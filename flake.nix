@@ -5,10 +5,12 @@
     nixpkgs.url = "nixpkgs/nixos-unstable";
   };
 
-  outputs = { nixpkgs, ... }:
+  outputs =
+    { nixpkgs, ... }:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
-    in {
+    in
+    {
       devShells.x86_64-linux.default = pkgs.mkShell {
         buildInputs = with pkgs; [
           # Linux Host #
