@@ -1,59 +1,62 @@
-# This whole thing is dependent on the drive paths found in `/dev/disk/by-path/`, which look like `pci-0000:00:14.0-usb-0:1.1.3:1.0-scsi-0:0:0:0`; the part we care about is the `1.1.3`, which is the "port path" for a given hub (not including the root port). 
-
-# We're using string manipulation and parsing for this. In theory, if you had 10 or more USB ports, this would break; anything targeting string slices will need to be reworked later. I'm very tired.
-
-# It's recommended not to use it in most circumstances because it's better to address by other identifiers, but here, the physical path is what we care about. https://docs.redhat.com/en/documentation/Red_Hat_Enterprise_Linux/5/html/Online_Storage_Reconfiguration_Guide/persistent_naming.html
-
-import re
 import gi
-from gi.repository.Gio import Drive
-
-from usb_utilities import get_all_usb_hubs
-
 gi.require_version('UDisks', '2.0') 
-import gi.repository.UDisks as UDisks # This is annoying, language server doesn't like it
 
-def get_usb_devices_on_hub(hub_basename: str) -> list[Drive]:
+from gi.repository import GLib
+import gi.repository.UDisks as UDisks # This is annoying, language server doesn't like anything but this
+
+from usb_utilities import get_block_devices_under_hub
+
+G_VARIANT_TYPE_VARDICT = GLib.VariantType.new('a{sv}')
+
+param_builder = GLib.VariantBuilder.new(G_VARIANT_TYPE_VARDICT)
+
+def get_usb_drives_on_hub(hub_basename: str) -> list[UDisks.Object]:
     """
     Identify all USB drives connected through a specific USB hub.
     
-    :param str hub_path: A USB hub's basename; expected to be in form 1-1.1(.1)+
+    :param str hub_path: A USB hub's basename; expected to be in form 1-1(.1)+
     """
-
-    drives_on_hub = []
+    drives_under_hub = []
+    
+    block_device_paths = get_block_devices_under_hub(hub_basename)
 
     client = UDisks.Client.new_sync(None)
     manager = client.get_object_manager()
 
-    usb_drives = [
-        drive for obj in manager.get_objects()
-        if isinstance(obj, UDisks.Object) and (drive := obj.get_drive()) and 'usb' in drive.get_property('connection-bus')
-        ]
+    for obj in manager.get_objects():
+        if isinstance(obj, UDisks.Object) \
+                and (fs := obj.get_filesystem()) \
+                and (fs.get_property('mount_points') != []) \
+                and (block := obj.get_block()) \
+                and (drive := client.get_drive_for_block(block)) \
+                and ('usb' in drive.props.connection_bus):
+                    device: str = block.props.device
+                    for p in block_device_paths:
+                        if device.startswith(p):
+                            drives_under_hub.append(obj)
+    return drives_under_hub
 
-    for d in usb_drives:
-        if (block := client.get_block_for_drive(d, True)):
-            symlink_paths: list[str] = block.get_property('symlinks')
 
-            id = ""
-            for p in symlink_paths:
-                if 'by-id' in p:
-                    id = p
-                elif 'by-path' in p:
-                    match = re.search(r'usb[v\d]*-\d+:(\d+(?:\.\d+)*)', p) # WIP regex to strip port path
-                    if match:
-                        # Trim off the last port; we don't care which port on the hub the drive is on, and we don't care which root port the hub is plugged into (the n- at the beginning)
-                        if match.group(1)[:-2].startswith(hub_basename[2:]): 
-                            print("Found a drive under this path: ", p, "\n\twith ID:", id)
-                            drives_on_hub.append(d)
-                            break
-    return drives_on_hub
+def unmount_all_devices_on_hub(hub_basename: str):
+    # Unmount options - https://storaged.org/doc/udisks2-api/latest/gdbus-org.freedesktop.UDisks2.Filesystem.html#gdbus-method-org-freedesktop-UDisks2-Filesystem.Unmount
+    optname = GLib.Variant.new_string('force')
+    value = GLib.Variant.new_boolean(False)
+    variant_value = GLib.Variant.new_variant(value)
+    newsv = GLib.Variant.new_dict_entry(optname, variant_value)
+    
+    # Standard options - https://storaged.org/doc/udisks2-api/latest/udisks-std-options.html
+    optname = GLib.Variant.new_string('auth.no_user_interaction')
+    value = GLib.Variant.new_boolean(False)
+    variant_value = GLib.Variant.new_variant(value)
+    newsv = GLib.Variant.new_dict_entry(optname, variant_value)
+    
+    # TODO
+    # Break this out into its own function/class
+    param_builder.add_value(newsv)
+    unmount_options = param_builder.end() 
 
-def get_all_drives_on_all_hubs():
+    # Would it be worth "inlining" this function so we can use the cached `fs` instead of calling the DBus method again?
+    for drive in get_usb_drives_on_hub(hub_basename):
+        if (fs := drive.get_filesystem()):
+            fs.call_unmount_sync(unmount_options)
 
-    """
-    Temporary test function
-    """
-    hubs = get_all_usb_hubs()
-    for hub in hubs:
-        for subhub in hub:
-            print(subhub.basename)

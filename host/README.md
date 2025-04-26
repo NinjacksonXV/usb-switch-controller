@@ -14,4 +14,4 @@ If using Pyright, I also recommend adding this to your `pyrightconfig.json` to d
 ```json 
 "reportMissingModuleSource": false
 ```
-As a GObject module, UDisks isn't resolved until runtime.
+As a GIR module, UDisks isn't resolved until runtime.

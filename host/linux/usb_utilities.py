@@ -1,11 +1,15 @@
 import os
+from os.path import realpath
 
 # https://www.usb.org/defined-class-codes#anchor_BaseClass09h
 HUB_CLASS = "09"
 HUB_SUBCLASS = "00"
 
 class SysUsbDevice:
-    """A USB device as described in /sys/bus/usb/devices. Contains parameters equivalent to the files found in a given device directory."""
+    """*DEPRECATED*
+    A USB device as described in /sys/bus/usb/devices. Contains parameters equivalent to the files found in a given device directory.
+    """
+    
     def __init__(self, basename: str):
         self.basename = basename
         self.child_paths = []
@@ -53,6 +57,22 @@ class SysUsbDevice:
     devpath: str
     busnum: str
     quirks: str
+
+def get_block_devices_under_hub(hub_path):
+    block_base = '/sys/block/'
+    devices = []
+
+    for block_dev in os.listdir(block_base):
+        device_path = os.path.join(block_base, block_dev, 'device')
+        if not os.path.islink(device_path):
+            continue
+        
+        real_path = os.path.realpath(device_path)  # resolves symlinks
+        
+        if [p for p in real_path.split('/') if p.startswith(hub_path)]:
+            devices.append(f'/dev/{block_dev}')
+
+    return devices
 
 def get_all_usb_hubs() -> list[list[SysUsbDevice]]:
     hubs: list[list[SysUsbDevice]] = []
